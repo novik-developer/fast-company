@@ -1,87 +1,79 @@
 import React, { useState } from "react";
-import api from '../api'
+import api from "../api";
 
-const Users =() => {
-  const [users, setUsers] = useState(api.users.fetchAll())
+const Users = () => {
+  const [users, setUsers] = useState(api.users.fetchAll());
 
-  const renderPhrase = () => {
-    const usersLength = users.length
-    let text = `${usersLength} человек тусанет с тобой сегодня`
-    let classes = 'badge m-2 bg-'
-      classes += usersLength ? 'primary' : 'danger'
+  const handleDelete = (userId) => {
+    setUsers(users.filter((user) => user._id !== userId));
+  };
 
-    if (!usersLength) text = "Никто с тобой не тусанет"
-    if (usersLength > 4 && usersLength < 20) {
-      return <span className={classes}>{text}</span> 
-    }
-    if (usersLength % 10 > 1 && usersLength % 10 < 5) {
-      text = `${usersLength} человека тусанут с тобой сегодня`
-      return <span className={classes}>{text}</span>
-    }
-    return  <span className={classes}>{text}</span> 
-  }
-
-
-  const renderQualitiesBadges = (qualities) => {
-    return qualities.map((quality) => {
-      const classes = 'badge m-1 bg-' + quality.color
-
-      return (
-        <span 
-          key={quality._id} 
-          className={classes}>
-          {quality.name}
-        </span>
-      )
-    })
-  }
-
-  const handleDelete = (userId)=> {
-    setUsers(prevState => prevState.filter((users) => users._id !== userId))
-  }
-
-  const renderTable = () => {
-    if (!users.length) return 
-    return <table className="table table-striped" >
-    <thead>
-      <tr>
-        <th scope="col">Имя</th>
-        <th scope="col">Качества</th>
-        <th scope="col">Профессия</th>
-        <th scope="col">Встретился, раз</th>
-        <th scope="col">Оценка</th>
-      </tr>
-    </thead>
-    <tbody>
-      { users.map((user) => (
-         <tr key={user._id}>
-         <td>{user.name}</td>
-         <td>{user.profession.name}</td>
-         <td>{renderQualitiesBadges(user.qualities)}</td>
-         <td>{user.completedMeetings}</td>
-         <td>{user.rate}</td>
-         <td>{user.bookmark}</td>
-         <td> 
-          <button
-            className="btn btn-danger"
-            onClick={() => handleDelete(user._id)}
-          >
-            Delete
-          </button>
-         </td>
-       </tr>
-      ))  
-      }
-    </tbody>
-  </table>
-  }
+  const renderPhrase = (number) => {
+    const lastOne = Number(number.toString().slice(-1));
+    if (number > 4 && number < 15) return "человек тусанет";
+    if ([2, 3, 4].indexOf(lastOne) >= 0) return "человека тусанут";
+    if (lastOne === 1) return "человек тусанет";
+    return "человек тусанет";
+  };
 
   return (
     <>
-    <h2>{renderPhrase()}</h2>
-      {renderTable()}
-    </>
-  )
-}
+      <h2>
+        <span
+          className={"badge " + (users.length > 0 ? "bg-primary" : "bg-danger")}
+        >
+          {users.length > 0
+            ? `${
+                users.length + " " + renderPhrase(users.length)
+              } с тобой сегодня`
+            : "Никто с тобой не тусанет"}
+        </span>
+      </h2>
 
-export default Users
+      {users.length > 0 && (
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">Имя</th>
+              <th scope="col">Качества</th>
+              <th scope="col">Профессия</th>
+              <th scope="col">Встретился, раз</th>
+              <th scope="col">Оценка</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user._id}>
+                <td>{user.name}</td>
+                <td>
+                  {user.qualities.map((item) => (
+                    <span
+                      className={"badge m-1 bg-" + item.color}
+                      key={item._id}
+                    >
+                      {item.name}
+                    </span>
+                  ))}
+                </td>
+                <td>{user.profession.name}</td>
+                <td>{user.completedMeetings}</td>
+                <td>{user.rate} /5</td>
+                <td>
+                  <button
+                    onClick={() => handleDelete(user._id)}
+                    className="btn btn-danger"
+                  >
+                    удалить
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
+  );
+};
+
+export default Users;
