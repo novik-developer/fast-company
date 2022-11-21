@@ -1,30 +1,16 @@
-import React, { useState } from "react";
-import api from "../api";
-import SearchStatus from "./searchStatus";
+import React from "react";
 import User from "./user";
 
-const Users = () => {
-  const [users, setUsers] = useState(api.users.fetchAll());
-
-  const handleDelete = (userId) => {
-    setUsers(users.filter((user) => user._id !== userId));
-  };
-  const handlerChangeBookmark = (userId) => {
-    const favotited = users.findIndex((user) => user._id === userId);
-    const favoritedUsers = [...users];
-    favoritedUsers[favotited].bookmark = !favoritedUsers[favotited].bookmark;
-    setUsers(favoritedUsers);
-  };
+const Users = ({ users, ...rest }) => {
   return (
     <>
-      {SearchStatus(users)}
       {users.length > 0 && (
         <table className="table">
           <thead>
             <tr>
               <th scope="col">Имя</th>
               <th scope="col">Качества</th>
-              <th scope="col">Профессия</th>
+              <th scope="col">Провфессия</th>
               <th scope="col">Встретился, раз</th>
               <th scope="col">Оценка</th>
               <th scope="col">Избранное</th>
@@ -33,12 +19,7 @@ const Users = () => {
           </thead>
           <tbody>
             {users.map((user) => (
-              <User
-                {...user}
-                key={user._id}
-                onDelete={handleDelete}
-                onChangeBookmark={handlerChangeBookmark}
-              />
+              <User key={user._id} {...rest} {...user} />
             ))}
           </tbody>
         </table>
