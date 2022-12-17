@@ -1,9 +1,21 @@
 import React from "react";
+import { Route, Switch } from "react-router-dom/cjs/react-router-dom.min";
 
-import Users from "./component/users";
+import Login from "./component/layout/login";
+import MainPage from "./component/layout/mainPage";
+import Users from "./component/layout/users";
 
 function App() {
-    return <Users />;
+    return (
+        <>
+            <Switch>
+                <Route path="/" exact component={MainPage} />
+                <Route path="/login" component={Login} />
+                <Route path="/users/:userId?" component={Users} />
+                <Route path="/users" component={Users} />
+            </Switch>
+        </>
+    );
 }
 
 export default App;
