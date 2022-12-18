@@ -8,8 +8,8 @@ import GroupList from "./groupList";
 import _ from "lodash";
 import UserTable from "./usersTable";
 
-const Users = () => {
-    const pageSize = 12;
+const UsersList = () => {
+    const pageSize = 4;
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfession] = useState();
     const [selectedProf, setSelectedProf] = useState();
@@ -112,8 +112,8 @@ const Users = () => {
     }
     return "...loading";
 };
-Users.propTypes = {
+UsersList.propTypes = {
     users: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
-export default Users;
+export default UsersList;
