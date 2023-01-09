@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import reportWebVitals from "./reportWebVitals";
 import App from "./app";
 import { BrowserRouter } from "react-router-dom/cjs/react-router-dom.min";
-import NavBar from "./component/navBar";
+import NavBar from "./component/ui/navBar";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

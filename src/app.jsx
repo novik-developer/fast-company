@@ -5,16 +5,16 @@ import {
     Switch
 } from "react-router-dom/cjs/react-router-dom.min";
 
-import Login from "./component/layout/login";
-import MainPage from "./component/layout/mainPage";
-import Users from "./component/layout/users";
+import Login from "./layout/login";
+import MainPage from "./layout/mainPage";
+import Users from "./layout/users";
 
 function App() {
     return (
         <>
             <Switch>
                 <Route path="/users/:userId?" component={Users} />
-                <Route path="/login" component={Login} />
+                <Route path="/login/:type?" component={Login} />
                 <Route path="/" exact component={MainPage} />
                 <Redirect to="/" />
             </Switch>
