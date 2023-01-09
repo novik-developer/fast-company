@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import UsersList from "../usersList";
-import UserPage from "../userPage";
+import UserPage from "../component/page/userPage";
+import UsersList from "../component/page/usersListPage";
 
 const Users = () => {
     const params = useParams();

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { paginate } from "../utils/paginate";
-import Pagination from "./pagination";
-import api from "../api";
+
+import { paginate } from "../../../utils/paginate";
+import Pagination from "../../common/pagination";
+import api from "../../../api";
 import PropTypes from "prop-types";
-import SearchStatus from "./searchStatus";
-import GroupList from "./groupList";
+import SearchStatus from "../../ui/searchStatus";
+import GroupList from "../../common/groupList";
 import _ from "lodash";
-import UserTable from "./usersTable";
-import Search from "./serach";
+import UserTable from "../../ui/usersTable";
+import Search from "../../ui/serach";
 
 const UsersList = () => {
     const pageSize = 4;
@@ -27,7 +28,7 @@ const UsersList = () => {
             return Object.values(item)
                 .join("")
                 .toLowerCase()
-                .includes(searchValue.toLowerCase());
+                .includes(searchValue.toLowerCase().trim());
         });
 
     const handleSearchChange = (event) => {

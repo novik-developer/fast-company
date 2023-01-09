@@ -4,9 +4,13 @@ import PropTypes from "prop-types";
 const TextField = ({ label, type, name, value, onChange, errors }) => {
     const [showPaswword, setShowPaswword] = useState(false);
 
-    const toggleShowPaswword = () => {
-        setShowPaswword((prevState) => !prevState);
+    const handleChange = ({ target }) => {
+        onChange({ name: target.name, value: target.value });
     };
+
+    function toggleShowPaswword() {
+        setShowPaswword((prevState) => !prevState);
+    }
 
     const getInputClasses = () => {
         return "form-control" + (errors ? " is-invalid" : "");
@@ -21,7 +25,7 @@ const TextField = ({ label, type, name, value, onChange, errors }) => {
                     id={name}
                     name={name}
                     value={value}
-                    onChange={onChange}
+                    onChange={handleChange}
                 />
                 {type === "password" && (
                     <button
