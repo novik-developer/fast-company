@@ -21,25 +21,25 @@ const LoginForm = () => {
     const validatorConfig = {
         email: {
             isRequired: {
-                massage: "Еmail обязателен к заполнению"
+                message: "Еmail обязателен к заполнению"
             },
             isEmail: {
-                massage: "Еmail введен не коректно"
+                message: "Еmail введен не коректно"
             }
         },
         password: {
             isRequired: {
-                massage: "Password обязателен к заполнению"
+                message: "Password обязателен к заполнению"
             },
             isCapitelSymbol: {
-                massage:
+                message:
                     "Password должен содержать хотя бы одну заглавную букву"
             },
             isContainDigit: {
-                massage: "Password должен содержать хотя бы одну цифру"
+                message: "Password должен содержать хотя бы одну цифру"
             },
             min: {
-                massage: "Password должен состоять минимум из 8 символов",
+                message: "Password должен состоять минимум из 8 символов",
                 value: 8
             }
         }
