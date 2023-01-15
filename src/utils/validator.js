@@ -33,7 +33,7 @@ export function validator(data, config) {
             default:
                 break;
         }
-        if (statusValidate) return config.massage;
+        if (statusValidate) return config.message;
     }
     for (const fildName in data) {
         for (const validatorMethod in config[fildName]) {

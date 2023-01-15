@@ -17,14 +17,11 @@ const RegisterForm = () => {
         licence: false
     });
     const [errors, setErrors] = useState({});
-    // const [qualities, setQualities] = useState({});
+
     const [qualities, setQualities] = useState([]);
-    // const [professions, setProfession] = useState();
+
     const [professions, setProfession] = useState([]);
-    // useEffect(() => {
-    //     api.professions.fetchAll().then((data) => setProfession(data));
-    //     api.qualities.fetchAll().then((data) => setQualities(data));
-    // }, []);
+
     useEffect(() => {
         api.professions.fetchAll().then((data) => {
             const professionsList = Object.keys(data).map((professionName) => ({
@@ -53,35 +50,35 @@ const RegisterForm = () => {
     const validatorConfig = {
         email: {
             isRequired: {
-                massage: "Еmail обязателен к заполнению"
+                message: "Еmail обязателен к заполнению"
             },
             isEmail: {
-                massage: "Еmail введен не коректно"
+                message: "Еmail введен не коректно"
             }
         },
         password: {
             isRequired: {
-                massage: "Пароль обязателен к заполнению"
+                message: "Пароль обязателен к заполнению"
             },
             isCapitelSymbol: {
-                massage: "Пароль должен содержать хотя бы одну заглавную букву"
+                message: "Пароль должен содержать хотя бы одну заглавную букву"
             },
             isContainDigit: {
-                massage: "Пароль должен содержать хотя бы одну цифру"
+                message: "Пароль должен содержать хотя бы одну цифру"
             },
             min: {
-                massage: "Пароль должен состоять минимум из 8 символов",
+                message: "Пароль должен состоять минимум из 8 символов",
                 value: 8
             }
         },
         profession: {
             isRequired: {
-                massage: "Обязательно выберите вашу профессию"
+                message: "Обязательно выберите вашу профессию"
             }
         },
         licence: {
             isRequired: {
-                massage:
+                message:
                     "Вы не можете воспользоваться нашим сервисом без подтверждения лицензионного соглашения"
             }
         }
@@ -93,13 +90,6 @@ const RegisterForm = () => {
         return Object.keys(errors).length === 0;
     };
     const isValid = Object.keys(errors).length === 0;
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     const isValide = validate();
-    //     if (!isValide) return;
-    //     console.log("event", data);
-    // };
 
     const handleSubmit = (e) => {
         e.preventDefault();
