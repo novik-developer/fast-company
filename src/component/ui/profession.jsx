@@ -15,3 +15,8 @@ Profession.propTypes = {
     id: PropTypes.string
 };
 export default Profession;
+
+function log() {
+    console.log("log");
+}
+log();
