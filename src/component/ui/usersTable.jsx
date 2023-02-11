@@ -2,10 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import BookMark from "../common/bookmark";
-// import QualitiesList from "./ui/qualities/qualitiesList";
+
 import Qualities from "./qualities";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import Table from "../common/table";
+import Profession from "./profession";
 
 const UserTable = ({
     users,
@@ -27,7 +28,10 @@ const UserTable = ({
             name: "Качетсва",
             component: (user) => <Qualities qualities={user.qualities} />
         },
-        professions: { path: "profession.name", name: "Профессия" },
+        professions: {
+            name: "Профессия",
+            component: (user) => <Profession id={user.profession} />
+        },
         completedMeetings: {
             path: "completedMeetings",
             name: "Встретился, раз"

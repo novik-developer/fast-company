@@ -18,7 +18,6 @@ const Comments = () => {
         api.comments.remove(id).then((id) => {
             setComments(comments.filter((x) => x._id !== id));
         });
-        console.log(comments);
     };
     const handleSubmit = (data) => {
         api.comments
