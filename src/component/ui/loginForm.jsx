@@ -4,6 +4,7 @@ import CheckBoxField from "../common/form/checkBoxField";
 import TextField from "../common/form/textField";
 
 const LoginForm = () => {
+    console.log(process.env);
     const [data, setData] = useState({
         email: "",
         password: "",
