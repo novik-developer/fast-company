@@ -13,6 +13,10 @@ const userService = {
             payload
         );
         return data;
+    },
+    getById: async (id) => {
+        const { data } = await httpService.get(userEndPoint + id);
+        return data;
     }
 };
 

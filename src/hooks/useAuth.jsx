@@ -25,6 +25,7 @@ const AuthProvider = ({ children }) => {
                 password,
                 returnSecureToken: true
             });
+            console.log("data Sign Up", data);
             setToken(data);
             await createUser({ id: data.localId, email, ...rest });
             console.log("data", data);
@@ -42,19 +43,50 @@ const AuthProvider = ({ children }) => {
         }
     }
 
-    async function signIn(email, password) {
+    async function signIn({ email, password }) {
         const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
-        const { data } = await httpAuth.post(url, {
-            email,
-            password,
-            returnSecureToken: true
-        });
-        console.log("data SignIn:", data);
+        try {
+            const { data } = await httpAuth.post(url, {
+                email,
+                password,
+                returnSecureToken: true
+            });
+            setToken(data);
+            await getUser(data.localId);
+            console.log("data SignIn:", data);
+        } catch (error) {
+            errorCatcher(error);
+            const { code, message } = error.response.data.error;
+            console.log(code, message);
+            if (code === 400) {
+                let errorObject = { email: message, password: message };
+                if (message === "EMAIL_NOT_FOUND") {
+                    errorObject = {
+                        email: "ЭЛЕКТРОННАЯ ПОЧТА НЕ НАЙДЕНА"
+                    };
+                }
+                if (message === "INVALID_PASSWORD") {
+                    errorObject = {
+                        password: "Неверный пароль"
+                    };
+                }
+                throw errorObject;
+            }
+        }
     }
 
     async function createUser(data) {
         try {
             const { content } = userService.create(data);
+            setUser(content);
+        } catch (error) {
+            errorCatcher(error);
+        }
+    }
+
+    async function getUser(data) {
+        try {
+            const { content } = userService.getById(data);
             setUser(content);
         } catch (error) {
             errorCatcher(error);
