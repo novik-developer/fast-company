@@ -5,7 +5,12 @@ import userService from "../services/user.service";
 import { toast } from "react-toastify";
 import { setToken } from "../services/localStorage.service";
 
-const httpAuth = axios.create();
+const httpAuth = axios.create({
+    baseURL: "https://identitytoolkit.googleapis.com/v1/",
+    params: {
+        key: process.env.REACT_APP_FIREBASE_KEY
+    }
+});
 const AuthContext = React.createContext();
 
 export const useAuth = () => {
@@ -17,7 +22,7 @@ const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     async function signUp({ email, password, ...rest }) {
-        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        const url = `accounts:signUp?`;
 
         try {
             const { data } = await httpAuth.post(url, {
@@ -25,6 +30,7 @@ const AuthProvider = ({ children }) => {
                 password,
                 returnSecureToken: true
             });
+            console.log("data Sign Up", data);
             setToken(data);
             await createUser({ id: data.localId, email, ...rest });
             console.log("data", data);
@@ -42,14 +48,32 @@ const AuthProvider = ({ children }) => {
         }
     }
 
-    async function signIn(email, password) {
-        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
-        const { data } = await httpAuth.post(url, {
-            email,
-            password,
-            returnSecureToken: true
-        });
-        console.log("data SignIn:", data);
+    async function signIn({ email, password }) {
+        const url = `accounts:signInWithPassword?`;
+        try {
+            const { data } = await httpAuth.post(url, {
+                email,
+                password,
+                returnSecureToken: true
+            });
+            setToken(data);
+
+            console.log("data SignIn:", data);
+        } catch (error) {
+            errorCatcher(error);
+            const { code, message } = error.response.data.error;
+            console.log(code, message);
+            switch (message) {
+                case "INVALID_PASSWORD":
+                    throw new Error("Email или пароль введены не корректно");
+
+                case "EMAIL_NOT_FOUND":
+                    throw new Error("Email или пароль введены не корректно");
+
+                default:
+                    throw new Error("Слишком много попыток входа");
+            }
+        }
     }
 
     async function createUser(data) {
