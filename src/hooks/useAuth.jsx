@@ -5,7 +5,12 @@ import userService from "../services/user.service";
 import { toast } from "react-toastify";
 import { setToken } from "../services/localStorage.service";
 
-const httpAuth = axios.create();
+const httpAuth = axios.create({
+    baseURL: "https://identitytoolkit.googleapis.com/v1/",
+    params: {
+        key: process.env.REACT_APP_FIREBASE_KEY
+    }
+});
 const AuthContext = React.createContext();
 
 export const useAuth = () => {
@@ -17,7 +22,7 @@ const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     async function signUp({ email, password, ...rest }) {
-        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        const url = `accounts:signUp?`;
 
         try {
             const { data } = await httpAuth.post(url, {
@@ -44,7 +49,7 @@ const AuthProvider = ({ children }) => {
     }
 
     async function signIn({ email, password }) {
-        const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_FIREBASE_KEY}`;
+        const url = `accounts:signInWithPassword?`;
         try {
             const { data } = await httpAuth.post(url, {
                 email,
@@ -52,25 +57,21 @@ const AuthProvider = ({ children }) => {
                 returnSecureToken: true
             });
             setToken(data);
-            await getUser(data.localId);
+
             console.log("data SignIn:", data);
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
             console.log(code, message);
-            if (code === 400) {
-                let errorObject = { email: message, password: message };
-                if (message === "EMAIL_NOT_FOUND") {
-                    errorObject = {
-                        email: "ЭЛЕКТРОННАЯ ПОЧТА НЕ НАЙДЕНА"
-                    };
-                }
-                if (message === "INVALID_PASSWORD") {
-                    errorObject = {
-                        password: "Неверный пароль"
-                    };
-                }
-                throw errorObject;
+            switch (message) {
+                case "INVALID_PASSWORD":
+                    throw new Error("Email или пароль введены не корректно");
+
+                case "EMAIL_NOT_FOUND":
+                    throw new Error("Email или пароль введены не корректно");
+
+                default:
+                    throw new Error("Слишком много попыток входа");
             }
         }
     }
@@ -78,15 +79,6 @@ const AuthProvider = ({ children }) => {
     async function createUser(data) {
         try {
             const { content } = userService.create(data);
-            setUser(content);
-        } catch (error) {
-            errorCatcher(error);
-        }
-    }
-
-    async function getUser(data) {
-        try {
-            const { content } = userService.getById(data);
             setUser(content);
         } catch (error) {
             errorCatcher(error);
