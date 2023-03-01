@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useQualities } from "../../../hooks/useQualities";
 
 const Qualitie = ({ id }) => {
-    console.log("_id ", id);
+    // console.log("_id ", id);
     const { getQuality } = useQualities();
     const { _id, color, name } = getQuality(id);
 

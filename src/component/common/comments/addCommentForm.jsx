@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
-import API from "../../../api";
+import React, { useState } from "react";
+
 import { validator } from "../../../utils/validator";
-import SelecteFild from "../form/selectFild";
+
 import TextAreaField from "../form/textAreaField";
 import PropTypes from "prop-types";
 
-const initialData = { userId: "", content: "" };
 const AddCommentForm = ({ onSubmit }) => {
-    const [users, setUsers] = useState({});
-    const [data, setData] = useState(initialData);
+    const [data, setData] = useState({});
     const [errors, setErrors] = useState({});
 
     const handleChange = (target) => {
@@ -19,11 +17,6 @@ const AddCommentForm = ({ onSubmit }) => {
     };
 
     const validatorConfig = {
-        userId: {
-            isRequired: {
-                message: "Еmail обязателен к заполнению"
-            }
-        },
         content: {
             isRequired: {
                 message: "Еmail обязателен к заполнению"
@@ -31,17 +24,13 @@ const AddCommentForm = ({ onSubmit }) => {
         }
     };
 
-    useEffect(() => {
-        API.users.fetchAll().then(setUsers);
-    }, []);
-
     const validate = () => {
         const errors = validator(data, validatorConfig);
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
     const clearForm = () => {
-        setData(initialData);
+        setData({});
         setErrors({});
     };
 
@@ -51,34 +40,15 @@ const AddCommentForm = ({ onSubmit }) => {
         if (!isValid) return;
         onSubmit(data);
         clearForm();
-        console.log(data);
     };
-    const arrayOfUsers =
-        users &&
-        Object.keys(users).map((userId) => ({
-            label: users[userId].name,
-            value: users[userId]._id
-        }));
 
-    // useEffect(() => {
-    //     validate();
-    // }, [data]);
     return (
         <div>
             <h2>New comment</h2>
             <form onSubmit={handleSubmit}>
-                <SelecteFild
-                    options={arrayOfUsers}
-                    onChange={handleChange}
-                    value={data.userId}
-                    name="userId"
-                    defaultOption={"Выберите пользователя"}
-                    error={errors.userId}
-                />
-
                 <TextAreaField
                     onChange={handleChange}
-                    value={data.content}
+                    value={data.content || ""}
                     name="content"
                     label="Сообщение"
                     error={errors.content}

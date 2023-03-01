@@ -24,7 +24,7 @@ export const ProfessionProvider = ({ children }) => {
             setError(null);
         }
     }, [error]);
-    // полуяение профессий
+    // получение профессий
     function getProfession(id) {
         return professions.find((p) => p._id === id);
     }
