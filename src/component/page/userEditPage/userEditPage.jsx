@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import { useProfessions } from "../../../hooks/useProfession";
 import { useQualities } from "../../../hooks/useQualities";
@@ -11,18 +11,13 @@ import SelectFild from "../../common/form/selectFild";
 import TextField from "../../common/form/textField";
 
 const EditUserPage = () => {
-    const { userId } = useParams();
-    const { currentUser, updateData } = useAuth();
     const history = useHistory();
+    const { currentUser, updateData } = useAuth();
     const { professions, isLoading: professionLoading } = useProfessions();
     const { qualities, isLoading: qualitiesLoading } = useQualities();
     const [isLoading, setIsLoading] = useState(true);
     const [errors, setErrors] = useState({});
     const [data, setData] = useState();
-
-    // console.log("professions_1", professions);
-    // console.log("qualities_1", qualities);
-    // console.log("currentUser", currentUser);
 
     const professionsList = professions.map((p) => ({
         label: p.name,
@@ -35,28 +30,27 @@ const EditUserPage = () => {
         color: q.color
     }));
 
-    const getQualities = (elements) => {
+    const getQualities = (qualId) => {
         const qualitiesArray = [];
-        for (const elem of elements) {
-            for (const quality in qualities) {
-                if (elem === qualities[quality]._id) {
-                    qualitiesArray.push(qualities[quality]);
+        for (const elem of qualId) {
+            for (const quality of qualities) {
+                if (elem === quality._id) {
+                    qualitiesArray.push(quality);
+                    break;
                 }
             }
         }
         return qualitiesArray;
     };
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        updateData({
+        await updateData({
             ...data,
             qualities: data.qualities.map((quality) => quality.value)
         });
-        history.push(`/users/${userId}`);
-
-        // console.log("DATA: ", data);
+        history.push(`/users/${currentUser._id}`);
     };
     const transformData = (data) => {
         return getQualities(data).map((qual) => ({
