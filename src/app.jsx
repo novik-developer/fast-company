@@ -25,7 +25,7 @@ function App() {
                 <ProfessionProvider>
                     <QualitiesProvaider>
                         <Switch>
-                            <Route
+                            <ProtectedRoute
                                 path="/users/:userId?/edit"
                                 component={EditUserPage}
                             />
