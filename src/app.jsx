@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Redirect,
     Route,
@@ -8,7 +8,6 @@ import { ToastContainer } from "react-toastify";
 
 import EditUserPage from "./component/page/userEditPage/userEditPage";
 import { ProfessionProvider } from "./hooks/useProfession";
-import { QualitiesProvaider } from "./hooks/useQualities";
 import Login from "./layout/login";
 import MainPage from "./layout/mainPage";
 import Users from "./layout/users";
@@ -16,29 +15,33 @@ import NavBar from "./component/ui/navBar";
 import AuthProvider from "./hooks/useAuth";
 import ProtectedRoute from "./component/common/protectedRoute";
 import LogOut from "./layout/logOut";
+import { useDispatch } from "react-redux";
+import { loadQualitiesList } from "./store/qualities";
 
 function App() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(loadQualitiesList());
+    });
     return (
         <>
             <AuthProvider>
                 <NavBar />
                 <ProfessionProvider>
-                    <QualitiesProvaider>
-                        <Switch>
-                            <ProtectedRoute
-                                path="/users/:userId?/edit"
-                                component={EditUserPage}
-                            />
-                            <ProtectedRoute
-                                path="/users/:userId?"
-                                component={Users}
-                            />
-                            <Route path="/login/:type?" component={Login} />
-                            <Route path="/logout" component={LogOut} />
-                            <Route path="/" exact component={MainPage} />
-                            <Redirect to="/" />
-                        </Switch>
-                    </QualitiesProvaider>
+                    <Switch>
+                        <ProtectedRoute
+                            path="/users/:userId?/edit"
+                            component={EditUserPage}
+                        />
+                        <ProtectedRoute
+                            path="/users/:userId?"
+                            component={Users}
+                        />
+                        <Route path="/login/:type?" component={Login} />
+                        <Route path="/logout" component={LogOut} />
+                        <Route path="/" exact component={MainPage} />
+                        <Redirect to="/" />
+                    </Switch>
                 </ProfessionProvider>
                 <ToastContainer />
             </AuthProvider>
