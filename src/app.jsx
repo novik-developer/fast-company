@@ -7,7 +7,6 @@ import {
 import { ToastContainer } from "react-toastify";
 
 import EditUserPage from "./component/page/userEditPage/userEditPage";
-import { ProfessionProvider } from "./hooks/useProfession";
 import Login from "./layout/login";
 import MainPage from "./layout/mainPage";
 import Users from "./layout/users";
@@ -17,32 +16,29 @@ import ProtectedRoute from "./component/common/protectedRoute";
 import LogOut from "./layout/logOut";
 import { useDispatch } from "react-redux";
 import { loadQualitiesList } from "./store/qualities";
+import { loadProfessionsList } from "./store/profession";
 
 function App() {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(loadQualitiesList());
+        dispatch(loadProfessionsList());
     });
     return (
         <>
             <AuthProvider>
                 <NavBar />
-                <ProfessionProvider>
-                    <Switch>
-                        <ProtectedRoute
-                            path="/users/:userId?/edit"
-                            component={EditUserPage}
-                        />
-                        <ProtectedRoute
-                            path="/users/:userId?"
-                            component={Users}
-                        />
-                        <Route path="/login/:type?" component={Login} />
-                        <Route path="/logout" component={LogOut} />
-                        <Route path="/" exact component={MainPage} />
-                        <Redirect to="/" />
-                    </Switch>
-                </ProfessionProvider>
+                <Switch>
+                    <ProtectedRoute
+                        path="/users/:userId?/edit"
+                        component={EditUserPage}
+                    />
+                    <ProtectedRoute path="/users/:userId?" component={Users} />
+                    <Route path="/login/:type?" component={Login} />
+                    <Route path="/logout" component={LogOut} />
+                    <Route path="/" exact component={MainPage} />
+                    <Redirect to="/" />
+                </Switch>
                 <ToastContainer />
             </AuthProvider>
         </>
