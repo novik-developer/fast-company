@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
-import { useProfessions } from "../../../hooks/useProfession";
 import {
     getQualitiesList,
     getQualitiesLoadingStatus
@@ -13,11 +12,16 @@ import MultiSelectField from "../../common/form/multiSelectField";
 import RadioField from "../../common/form/radioField";
 import SelectFild from "../../common/form/selectFild";
 import TextField from "../../common/form/textField";
+import {
+    getProfessionsList,
+    getProfessionsLoadingStatus
+} from "../../../store/profession";
 
 const EditUserPage = () => {
     const history = useHistory();
     const { currentUser, updateData } = useAuth();
-    const { professions, isLoading: professionLoading } = useProfessions();
+    const professions = useSelector(getProfessionsList());
+    const professionLoading = useSelector(getProfessionsLoadingStatus());
     const qualities = useSelector(getQualitiesList());
     const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
     const [isLoading, setIsLoading] = useState(true);
