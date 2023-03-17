@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { useAuth } from "../../../hooks/useAuth";
+// import { useAuth } from "../../../hooks/useAuth";
 import {
     getQualitiesList,
     getQualitiesLoadingStatus
@@ -16,11 +16,13 @@ import {
     getProfessionsList,
     getProfessionsLoadingStatus
 } from "../../../store/profession";
-import { getCurrentUserData } from "../../../store/users";
+import { getCurrentUserData, updateData } from "../../../store/users";
 
 const EditUserPage = () => {
     const history = useHistory();
-    const { updateData } = useAuth();
+    const dispatch = useDispatch();
+    // const { updateData } = useAuth();
+
     const currentUser = useSelector(getCurrentUserData());
     const professions = useSelector(getProfessionsList());
     const professionLoading = useSelector(getProfessionsLoadingStatus());
@@ -53,16 +55,30 @@ const EditUserPage = () => {
         }
         return qualitiesArray;
     };
-    const handleSubmit = async (e) => {
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     const isValid = validate();
+    //     if (!isValid) return;
+    //     await updateData({
+    //         ...data,
+    //         qualities: data.qualities.map((quality) => quality.value)
+    //     });
+    //     history.push(`/users/${currentUser._id}`);
+    // };
+
+    const handleSubmit = (e) => {
         e.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        await updateData({
-            ...data,
-            qualities: data.qualities.map((quality) => quality.value)
-        });
+        dispatch(
+            updateData({
+                ...data,
+                qualities: data.qualities.map((quality) => quality.value)
+            })
+        );
         history.push(`/users/${currentUser._id}`);
     };
+
     const transformData = (data) => {
         return getQualities(data).map((qual) => ({
             label: qual.name,
