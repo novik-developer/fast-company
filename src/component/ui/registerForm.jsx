@@ -5,14 +5,13 @@ import SelecteFild from "../common/form/selectFild";
 import RadioField from "../common/form/radioField";
 import MiltiSelectField from "../common/form/multiSelectField";
 import CheckBoxField from "../common/form/checkBoxField";
-import { useAuth } from "../../hooks/useAuth";
-import { useHistory } from "react-router-dom/cjs/react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getQualitiesList } from "../../store/qualities";
 import { getProfessionsList } from "../../store/profession";
+import { signUp } from "../../store/users";
 
 const RegisterForm = () => {
-    const history = useHistory();
+    const dispatch = useDispatch();
     const [data, setData] = useState({
         email: "",
         name: "",
@@ -37,8 +36,6 @@ const RegisterForm = () => {
         label: prof.name,
         value: prof._id
     }));
-
-    const { signUp } = useAuth();
 
     const handleChange = (target) => {
         setData((prevState) => ({
@@ -108,12 +105,7 @@ const RegisterForm = () => {
             ...data,
             qualities: data.qualities.map((qual) => qual.value)
         };
-        try {
-            await signUp(newData);
-            history.push("/");
-        } catch (error) {
-            setErrors(error);
-        }
+        dispatch(signUp(newData));
     };
 
     useEffect(() => {

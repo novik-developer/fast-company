@@ -8,24 +8,23 @@ import GroupList from "../../common/groupList";
 import _ from "lodash";
 import UserTable from "../../ui/usersTable";
 import Search from "../../ui/serach";
-import { useUser } from "../../../hooks/useUser";
-import { useAuth } from "../../../hooks/useAuth";
 import {
     getProfessionsList,
     getProfessionsLoadingStatus
 } from "../../../store/profession";
 import { useSelector } from "react-redux";
+import { getCurrentUserId, getUsersList } from "../../../store/users";
 
 const UsersList = () => {
     const pageSize = 4;
     const professions = useSelector(getProfessionsList());
     const professionsLoading = useSelector(getProfessionsLoadingStatus());
-    const { currentUser } = useAuth();
+    const currentUserId = useSelector(getCurrentUserId());
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" }); // asc,desc
 
-    const { users } = useUser();
+    const users = useSelector(getUsersList());
 
     // searchInput
     const [searchValue, setSearchValue] = useState("");
@@ -85,7 +84,7 @@ const UsersList = () => {
         const filteredUsers = selectedProf
             ? data.filter((user) => _.isEqual(user.profession, selectedProf))
             : filteredSearchUsers;
-        return filteredUsers.filter((u) => u._id !== currentUser._id);
+        return filteredUsers.filter((u) => u._id !== currentUserId);
     }
 
     const filteredUsers = filterUsers(users);

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
     Redirect,
     Route,
@@ -14,33 +14,31 @@ import NavBar from "./component/ui/navBar";
 import AuthProvider from "./hooks/useAuth";
 import ProtectedRoute from "./component/common/protectedRoute";
 import LogOut from "./layout/logOut";
-import { useDispatch } from "react-redux";
-import { loadQualitiesList } from "./store/qualities";
-import { loadProfessionsList } from "./store/profession";
+import AppLoader from "./component/ui/hoc/appLoader";
 
 function App() {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(loadQualitiesList());
-        dispatch(loadProfessionsList());
-    });
     return (
         <>
-            <AuthProvider>
-                <NavBar />
-                <Switch>
-                    <ProtectedRoute
-                        path="/users/:userId?/edit"
-                        component={EditUserPage}
-                    />
-                    <ProtectedRoute path="/users/:userId?" component={Users} />
-                    <Route path="/login/:type?" component={Login} />
-                    <Route path="/logout" component={LogOut} />
-                    <Route path="/" exact component={MainPage} />
-                    <Redirect to="/" />
-                </Switch>
-                <ToastContainer />
-            </AuthProvider>
+            <AppLoader>
+                <AuthProvider>
+                    <NavBar />
+                    <Switch>
+                        <ProtectedRoute
+                            path="/users/:userId?/edit"
+                            component={EditUserPage}
+                        />
+                        <ProtectedRoute
+                            path="/users/:userId?"
+                            component={Users}
+                        />
+                        <Route path="/login/:type?" component={Login} />
+                        <Route path="/logout" component={LogOut} />
+                        <Route path="/" exact component={MainPage} />
+                        <Redirect to="/" />
+                    </Switch>
+                    <ToastContainer />
+                </AuthProvider>
+            </AppLoader>
         </>
     );
 }

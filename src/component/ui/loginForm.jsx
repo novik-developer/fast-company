@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { useAuth } from "../../hooks/useAuth";
 import { validator } from "../../utils/validator";
 import CheckBoxField from "../common/form/checkBoxField";
 import TextField from "../common/form/textField";
+import { useDispatch } from "react-redux";
+import { logIn } from "../../store/users";
 
 const LoginForm = () => {
-    // console.log(process.env);
-    const { signIn } = useAuth();
+    const dispatch = useDispatch();
     const history = useHistory();
     const [data, setData] = useState({
         email: "",
@@ -45,21 +45,14 @@ const LoginForm = () => {
     };
     const isValid = Object.keys(errors).length === 0;
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         const isValide = validate();
         if (!isValide) return;
-
-        try {
-            await signIn(data);
-            history.push(
-                history.location.state
-                    ? history.location.state.from.pathname
-                    : "/"
-            );
-        } catch (error) {
-            setEnterError(error.message);
-        }
+        const redirect = history.location.state
+            ? history.location.state.from.pathname
+            : "/";
+        dispatch(logIn({ payload: data, redirect }));
     };
 
     useEffect(() => {
