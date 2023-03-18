@@ -1,24 +1,32 @@
-import React from "react";
-// import api from "../../api";
+import React, { useEffect } from "react";
 import CommentList from "../common/comments/commentList";
 import { orderBy } from "lodash";
 import AddCommentForm from "../common/comments/addCommentForm";
-import { useComments } from "../../hooks/useComments";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    createComment,
+    getCommentsList,
+    getCommentsLoadingStatus,
+    loadCommentsList,
+    removeComment
+} from "../../store/comments";
+import { useParams } from "react-router-dom";
 
 const Comments = () => {
-    const { createComment, comments, removeComments } = useComments();
+    const dispatch = useDispatch();
+    const { userId } = useParams();
+    const comments = useSelector(getCommentsList());
+    const isLoading = useSelector(getCommentsLoadingStatus());
 
-    const handleRemove = (id) => {
-        removeComments(id);
-        // api.comments.remove(id).then((id) => {
-        //     setComments(comments.filter((x) => x._id !== id));
-        // });s
+    useEffect(() => {
+        dispatch(loadCommentsList(userId));
+    }, [userId]);
+
+    const handleRemove = (commentId) => {
+        dispatch(removeComment(commentId));
     };
     const handleSubmit = (data) => {
-        createComment(data);
-        // api.comments
-        //     .add({ ...data, pageId: userId })
-        //     .then((data) => setComments([...comments, data]));
+        dispatch(createComment({ ...data, pageId: userId }));
     };
 
     const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
@@ -34,10 +42,14 @@ const Comments = () => {
                 <div className="card-body ">
                     <h2>Comments</h2>
                     <hr />
-                    <CommentList
-                        onRemove={handleRemove}
-                        comments={sortedComments}
-                    />
+                    {!isLoading ? (
+                        <CommentList
+                            onRemove={handleRemove}
+                            comments={sortedComments}
+                        />
+                    ) : (
+                        "...LOADING"
+                    )}
                 </div>
             </div>
         </>

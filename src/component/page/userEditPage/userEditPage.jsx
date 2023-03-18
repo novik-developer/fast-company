@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-// import { useAuth } from "../../../hooks/useAuth";
 import {
     getQualitiesList,
     getQualitiesLoadingStatus
@@ -19,9 +17,7 @@ import {
 import { getCurrentUserData, updateData } from "../../../store/users";
 
 const EditUserPage = () => {
-    const history = useHistory();
     const dispatch = useDispatch();
-    // const { updateData } = useAuth();
 
     const currentUser = useSelector(getCurrentUserData());
     const professions = useSelector(getProfessionsList());
@@ -55,16 +51,6 @@ const EditUserPage = () => {
         }
         return qualitiesArray;
     };
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     const isValid = validate();
-    //     if (!isValid) return;
-    //     await updateData({
-    //         ...data,
-    //         qualities: data.qualities.map((quality) => quality.value)
-    //     });
-    //     history.push(`/users/${currentUser._id}`);
-    // };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -76,7 +62,6 @@ const EditUserPage = () => {
                 qualities: data.qualities.map((quality) => quality.value)
             })
         );
-        history.push(`/users/${currentUser._id}`);
     };
 
     const transformData = (data) => {
