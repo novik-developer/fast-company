@@ -2,6 +2,7 @@ import { createAction, createSlice } from "@reduxjs/toolkit";
 import authService from "../services/auth.service";
 import localStorageService from "../services/localStorage.service";
 import userService from "../services/user.service";
+import { generateAuthError } from "../utils/generateAuthError";
 import { randomInt } from "../utils/getRandomInt";
 import history from "../utils/history";
 
@@ -56,6 +57,15 @@ const usersSlice = createSlice({
             state.entities = state.entities.map((user) =>
                 user._id === action.payload._id ? action.payload : user
             );
+        },
+        userLoggedOut: (state) => {
+            state.entities = null;
+            state.isLoggedIn = false;
+            state.auth = null;
+            state.dataLoaded = false;
+        },
+        authRequested: (state) => {
+            state.error = null;
         }
     }
 });
@@ -68,7 +78,8 @@ const {
     authRequestSuccess,
     authRequestFaild,
     userCreated,
-    userUpdated
+    userUpdated,
+    userLoggedOut
 } = actions;
 
 export const loadUsersList = () => async (dispatch) => {
@@ -101,7 +112,13 @@ export const logIn =
             dispatch(authRequestSuccess({ userId: data.localId }));
             history.push(redirect);
         } catch (error) {
-            dispatch(authRequestFaild(error.message));
+            const { code, message } = error.response.data.error;
+            if (code === 400) {
+                const errorMessage = generateAuthError(message);
+                dispatch(authRequestFaild(errorMessage));
+            } else {
+                dispatch(authRequestFaild(error.message));
+            }
         }
     };
 
@@ -131,6 +148,12 @@ export const signUp =
             dispatch(authRequestFaild(error.message));
         }
     };
+
+export const logOut = () => (dispatch) => {
+    localStorageService.removeAuthData();
+    dispatch(userLoggedOut());
+    history.push("/");
+};
 
 export const updateData = (payload) => async (dispatch) => {
     dispatch(userUpdateRequested());
@@ -173,5 +196,6 @@ export const getUserById = (userId) => (state) => {
 export const getIsLoggedIn = () => (state) => state.users.isLoggedIn;
 export const getDataStatus = () => (state) => state.users.dataLoaded;
 export const getCurrentUserId = () => (state) => state.users.auth.userId;
+export const getAuthError = () => (state) => state.users.error;
 
 export default usersReducer;
